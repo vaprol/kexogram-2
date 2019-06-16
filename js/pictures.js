@@ -57,6 +57,14 @@ var renderPhotosFragment = function (photosArray) {
         photosFragment.appendChild(photoNode);
     }
     document.querySelector('.pictures').appendChild(photosFragment);
+    showBigPhoto(photosArray[0]);
+};
+var showBigPhoto = function (photoElement) {
+    var bigPhotoOverlay = document.querySelector('.gallery-overlay');
+    bigPhotoOverlay.querySelector('img').src = photoElement.url;
+    bigPhotoOverlay.querySelector('.likes-count').textContent = photoElement.likes;
+    bigPhotoOverlay.querySelector('.comments-count').textContent = photoElement.comments.length.toString();
+    bigPhotoOverlay.classList.remove('hidden');
 };
 
 renderPhotosFragment(generatePhotosArray(NUMBER_OF_PHOTOS));
