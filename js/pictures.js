@@ -95,7 +95,9 @@ var showBigPhotoOverlay = function (photoElement) {
     document.addEventListener('keydown', onEscHideOverlay);
 };
 var onImageClick = function (evt) {
-    showBigPhotoOverlay(photosArray[parseInt(evt.target.getAttribute('img_index'))]);
+    if (evt.target.className === 'picture__img')  {
+        showBigPhotoOverlay(photosArray[parseInt(evt.target.getAttribute('img_index'))]);
+    }
 };
 var onPictureCancelButtonClick = function () {
     bigPhotoOverlay.classList.add('hidden');
@@ -104,15 +106,37 @@ document.querySelector('.pictures').addEventListener('click', onImageClick, true
 document.querySelector('#picture-cancel').addEventListener('click', onPictureCancelButtonClick);
 
 var uploadOverlay = document.querySelector('.img-upload__overlay');
+var hashtagInput = uploadOverlay.querySelector('.text__hashtags');
+var commentInput = uploadOverlay.querySelector('.text__description');
+var onEscHideUploadOverlay = function (evt) {
+    if (evt.keyCode === ESC_KEYCODE) {
+        onUploadCloseButtonClick();
+    }
+};
 var onFileInputUpload = function () {
     uploadOverlay.classList.remove('hidden');
+    document.addEventListener('keydown', onEscHideUploadOverlay);
 };
 var onUploadCloseButtonClick = function () {
     uploadOverlay.classList.add('hidden');
-    document.querySelector('#upload-file').removeAttribute('value');
+    document.removeEventListener('keydown', onEscHideUploadOverlay);
+    document.querySelector('#upload-file').value = '';
 };
 document.querySelector('#upload-file').addEventListener('change', onFileInputUpload);
 uploadOverlay.querySelector('#upload-cancel').addEventListener('click', onUploadCloseButtonClick);
+hashtagInput.addEventListener('focus', function () {
+    document.removeEventListener('keydown', onEscHideUploadOverlay);
+});
+commentInput.addEventListener('focus', function () {
+    document.removeEventListener('keydown', onEscHideUploadOverlay);
+});
+hashtagInput.addEventListener('blur', function () {
+    document.addEventListener('keydown', onEscHideUploadOverlay);
+});
+commentInput.addEventListener('blur', function () {
+    document.addEventListener('keydown', onEscHideUploadOverlay);
+});
+
 
 var onSaturationPinDrop = function (evt) {
     // console.log(evt);
