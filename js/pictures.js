@@ -186,7 +186,26 @@ onUploadFormSubmit = function (evt) {
 };
 uploadFormSubmitButton.addEventListener('click', onUploadFormSubmit);
 
-var onSaturationPinDrop = function (evt) {
-    // console.log(evt);
+var saturationPin = uploadOverlay.querySelector('.effect-level__pin');
+var saturationBar = uploadOverlay.querySelector('.effect-level__depth');
+var onSaturationPinMousedown = function (evt) {
+    evt.preventDefault();
+    var minLeft = Math.round(saturationPin.parentElement.getBoundingClientRect().left);
+    var maxLeft = Math.round(saturationPin.parentElement.getBoundingClientRect().right);
+    var onDocumentMousemove = function (moveEvt) {
+        moveEvt.preventDefault();
+        if (moveEvt.clientX >= minLeft && moveEvt.clientX <= maxLeft) {
+            saturationPin.style.left = (moveEvt.clientX - minLeft) + 'px';
+            saturationBar.style.width = saturationPin.style.left;
+        }
+
+    };
+    var onDocumentMouseup  = function (evt) {
+        document.removeEventListener('mousemove', onDocumentMousemove);
+        document.removeEventListener('mouseup', onDocumentMouseup);
+    };
+
+    document.addEventListener('mousemove', onDocumentMousemove);
+    document.addEventListener('mouseup', onDocumentMouseup);
 };
-uploadOverlay.querySelector('.effect-level__pin').addEventListener('mouseup', onSaturationPinDrop);
+saturationPin.addEventListener('mousedown', onSaturationPinMousedown);
