@@ -188,6 +188,29 @@ uploadFormSubmitButton.addEventListener('click', onUploadFormSubmit);
 
 var saturationPin = uploadOverlay.querySelector('.effect-level__pin');
 var saturationBar = uploadOverlay.querySelector('.effect-level__depth');
+var chosenFilter = 'none';
+var setFilterScale = function (filter, scale) {
+    switch (filter) {
+        case 'none':
+            uploadedPhotoPreview.style.filter = '';
+            break;
+        case 'chrome':
+            uploadedPhotoPreview.style.filter = 'grayscale(' + (Math.round(scale * 10) / 10) + ')';
+            break;
+        case 'sepia':
+            uploadedPhotoPreview.style.filter = 'sepia(' + (Math.round(scale * 10) / 10) + ')';
+            break;
+        case 'marvin':
+            uploadedPhotoPreview.style.filter = 'invert(' + Math.round(scale * 100) + '%)';
+            break;
+        case 'phobos':
+            uploadedPhotoPreview.style.filter = 'blur(' + Math.round(scale * 5) + 'px)';
+            break;
+        case 'heat':
+            uploadedPhotoPreview.style.filter = 'brightness(' + (Math.round(scale * 3 * 10) / 10) + ')';
+            break;
+    }
+};
 var onSaturationPinMousedown = function (evt) {
     evt.preventDefault();
     var minLeft = Math.round(saturationPin.parentElement.getBoundingClientRect().left);
@@ -197,6 +220,7 @@ var onSaturationPinMousedown = function (evt) {
         if (moveEvt.clientX >= minLeft && moveEvt.clientX <= maxLeft) {
             saturationPin.style.left = (moveEvt.clientX - minLeft) + 'px';
             saturationBar.style.width = saturationPin.style.left;
+            setFilterScale(chosenFilter, saturationPin.offsetLeft / saturationPin.parentElement.offsetWidth);
         }
 
     };
@@ -209,3 +233,16 @@ var onSaturationPinMousedown = function (evt) {
     document.addEventListener('mouseup', onDocumentMouseup);
 };
 saturationPin.addEventListener('mousedown', onSaturationPinMousedown);
+
+var filterListPanel = uploadOverlay.querySelector('.effects__list');
+var uploadedPhotoPreview = uploadOverlay.querySelector('.img-upload__preview img');
+var onFilterClick = function (evt) {
+    if (evt.target.tagName === 'INPUT') {
+        saturationPin.style.left = '';
+        saturationBar.style.width = '';
+        evt.target.checked = true;
+        chosenFilter = evt.target.value;
+        setFilterScale(chosenFilter, saturationPin.offsetLeft / saturationPin.parentElement.offsetWidth);
+    }
+};
+filterListPanel.addEventListener('click', onFilterClick);
