@@ -24,8 +24,8 @@
         var commentsFragment = document.createDocumentFragment();
         for (var i = 0; i < commentsArray.length; i++) {
             var comment = commentsTemplate.cloneNode(true);
-            comment.querySelector('img').src = 'img/avatar-' + Math.ceil(Math.random() * 6) + '.svg';
-            comment.querySelector('.social__text').textContent = commentsArray[i];
+            comment.querySelector('img').src = commentsArray[i].avatar;
+            comment.querySelector('.social__text').textContent = commentsArray[i].message;
             commentsFragment.appendChild(comment);
         }
         return commentsFragment;

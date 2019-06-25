@@ -4,6 +4,13 @@
         uploadOverlay.classList.remove('hidden');
         document.addEventListener('keydown', onEscHideUploadOverlay);
     };
+    var resetUploadForm = function () {
+        document.querySelector('#upload-file').value = '';
+        saturationPin.style.left = '';
+        saturationBar.style.width = '';
+        chosenFilter = 'none';
+        setFilterScale(chosenFilter, saturationPin.offsetLeft / saturationPin.parentElement.offsetWidth);
+    };
     var onEscHideUploadOverlay = function (evt) {
         if (evt.keyCode === window.utils.escKeycode) {
             onUploadCloseButtonClick();
@@ -12,7 +19,7 @@
     var onUploadCloseButtonClick = function () {
         uploadOverlay.classList.add('hidden');
         document.removeEventListener('keydown', onEscHideUploadOverlay);
-        document.querySelector('#upload-file').value = '';
+        resetUploadForm();
     };
     document.querySelector('#upload-file').addEventListener('change', onFileInputUpload);
     uploadOverlay.querySelector('#upload-cancel').addEventListener('click', onUploadCloseButtonClick);
@@ -47,6 +54,7 @@
                 uploadedPhotoPreview.style.filter = 'brightness(' + (Math.round(scale * 3 * 10) / 10) + ')';
                 break;
         }
+        uploadForm.querySelector('input[name=effect-level').value = Math.round(scale * 100);
     };
     var onFilterClick = function (evt) {
         if (evt.target.tagName === 'INPUT') {
@@ -117,7 +125,9 @@
     var onUploadFormSubmit = function (evt) {
         evt.preventDefault();
         if (validateHashtags()) {
-            uploadForm.submit();
+            window.backend.save(new FormData(uploadForm), onUploadCloseButtonClick, function (errMessage) {
+                console.error(errMessage);
+            });
         } else {
             hashtagInput.reportValidity();
         }

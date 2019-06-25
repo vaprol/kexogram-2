@@ -12,5 +12,8 @@
         }
         document.querySelector('.pictures').appendChild(photosFragment);
     };
-    renderPhotosFragment(window.photosData);
+    var onError = function (errMessage) {
+        console.error(errMessage);
+    };
+    window.backend.load(renderPhotosFragment, onError);
 })();
